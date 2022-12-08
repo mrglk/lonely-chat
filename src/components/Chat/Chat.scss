@@ -1,22 +1,26 @@
+
+.chat {
+  max-width: 800px;
+  width: 100%;
+}
 .chat__inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
+  width: 100%;
   padding: 100px 0;
   box-sizing: border-box;
-//   max-width: 550px;
 }
 
 .chat__mesages {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column-reverse;
-  max-width: 550px;
-  width: 100%;
   word-wrap: break-word;
   overflow-y: scroll;
   height: 350px;
+  width: 100%;
 }
 .chat__form {
   flex: 0 0 auto;
@@ -24,7 +28,8 @@
 }
 
 .chat__input {
-  // height: 20px;
+  // height: 50px;
+  width: 400px;
   outline: none;
   resize: none;
 }
