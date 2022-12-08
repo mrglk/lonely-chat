@@ -1,33 +1,25 @@
 import "./Chat.scss";
 import Message from "../Message/Message";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
-  const [isNameSet, setIsNameSet] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
   const [localMessages, setLocalMessages] = useLocalStorage("message", []);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   let sessionName = JSON.parse(sessionStorage.getItem("name"));
 
+  console.log(sessionName)
+  
   useEffect(() => {
-    sessionName && setIsNameSet(true);
+    sessionName && setIsLogged(true);
   }, [sessionName]);
-
-  const addMessage = (message) => {
-    const newMessage = {
-      id: new Date().getTime(),
-      message: message,
-      name: name,
-      userId: sessionName.id,
-    };
-    setLocalMessages((localMessages) => [newMessage, ...localMessages]);
-  };
 
   const handleName = () => {
     if (!validation(name)) {
-      setError(true);
+      setError("Введите хотя бы два символа");
       return;
     }
 
@@ -36,81 +28,109 @@ export default function Chat() {
       name: name,
     };
     sessionStorage.setItem("name", JSON.stringify(newName));
-    setIsNameSet(true);
+    setIsLogged(true);
     setError("");
   };
 
-  const handleMessage = () => {
-    if (!validation(message)) {
-      setError(true);
-      return;
-    }
+  const addMessage = useCallback(
+    () => {
+      const newMessage = {
+        id: new Date().getTime(),
+        message: message,
+        name: sessionName.name,
+        userId: sessionName.id,
+      };
+      setLocalMessages((localMessages) => [newMessage, ...localMessages]);
+    },
+    [message, setLocalMessages, sessionName],
+  );
 
-    addMessage(message);
-    setError(false);
-  };
+  const handleMessage = useCallback(
+    () => {
+      if (!validation(message)) {
+        setError("Введите хотя бы два символа");
+        return;
+      }
+  
+      addMessage(message);
+      setError("");
+    },
+    [addMessage, message],
+  );
 
   const validation = (value) => {
-    return value.length < 2 ? false : true;
+    return value.length >= 2;
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      isNameSet ? handleMessage() : handleName();
+      isLogged ? handleMessage() : handleName();
     }
   };
 
   return (
     <div className="chat">
       <div className="chat__inner">
-        <h1 className="chat__header">Сообщения</h1>
-        <div className="chat__mesages">
-          {localMessages.map((item) => (
-            <Message
-              key={item.id}
-              name={item.name}
-              message={item.message}
-              userId={item.userId}
-              sessionId={sessionName?.id}
-            />
-          ))}
-        </div>
-        <div className="chat__form">
-          <div className="chat__inputWrapper">
-            {isNameSet ? (
-              <textarea
-                id="comment"
-                name="comment"
-                value={message}
-                rows="1"
-                cols="1"
-                placeholder="Собщение..."
-                minLength={3}
-                required={true}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className="chat__input"
-              />
-            ) : (
+        {isLogged ? (
+          <div className="chat__content">
+            <h1 className="chat__header">Чат</h1>
+            <div className="chat__messages">
+              {localMessages.map((item) => (
+                <Message
+                  key={item.id}
+                  name={item.name}
+                  message={item.message}
+                  userId={item.userId}
+                  sessionId={sessionName?.id}
+                />
+              ))}
+            </div>
+            <div className="chat__form">
+              <div className="chat__inputWrapper">
+                <textarea
+                  id="comment"
+                  name="comment"
+                  value={message}
+                  rows="1"
+                  cols="1"
+                  placeholder="Собщение..."
+                  minLength={2}
+                  required={true}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  className="chat__input"
+                />
+              </div>
+              <div className="chat__buttonWrapper">
+                <button className="chat__button" onClick={handleMessage}>
+                  Отправить
+                </button>
+              </div>
+            </div>
+            {error && <div>{error}</div>}
+          </div>
+        ) : (
+          <div className="chat__login">
+            <div className="chat__inputWrapper">
+              <label htmlFor="name">Введите имя:</label>
               <input
                 type="text"
+                name="name"
+                id="name"
                 value={name}
-                placeholder="Введите имя"
                 onChange={(e) => setName(e.target.value)}
                 className="chat__input"
                 onKeyDown={handleKeyPress}
               />
-            )}
+            </div>
+            <div className="chat__buttonWrapper">
+              <button className="chat__button" onClick={handleName}>
+                Отправить
+              </button>
+            </div>
+            {error && <div>{error}</div>}
           </div>
-          <div className="chat__buttonWrapper">
-            <button
-              className="chat__button"
-              onClick={isNameSet ? handleMessage : handleName}>
-              Отправить
-            </button>
-          </div>
-        </div>
-        {error && <div>Введите хотя бы два символа</div>}
+        )}
       </div>
     </div>
   );
