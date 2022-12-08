@@ -1,0 +1,15 @@
+.message {
+    display: flex;
+
+    &_right {
+        justify-content: flex-end;
+    }
+}
+
+.message__inner {
+    background-color: aliceblue;
+    padding: 15px 39px 15px 20px;
+    margin-bottom: 10px;
+    max-width: 300px;
+    border-radius: 20px;
+}

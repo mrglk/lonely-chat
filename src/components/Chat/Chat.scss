@@ -1,0 +1,30 @@
+.chat__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding: 100px 0;
+  box-sizing: border-box;
+//   max-width: 550px;
+}
+
+.chat__mesages {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column-reverse;
+  max-width: 550px;
+  width: 100%;
+  word-wrap: break-word;
+  overflow-y: scroll;
+  height: 350px;
+}
+.chat__form {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.chat__input {
+  // height: 20px;
+  outline: none;
+  resize: none;
+}
