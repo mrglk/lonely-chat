@@ -1,18 +1,16 @@
 import "./Message.scss";
 import * as cx from "classnames";
+import { getTimeForMessage } from "../../utils/helpers";
 
 export default function Message({
   name,
   message,
-  userId,
-  sessionId,
   timestamp,
+  isOutgoing
 }) {
   const classMessage = cx("message", {
-    message_right: userId === sessionId,
+    message_right: isOutgoing,
   });
-
-  const time = new Date(timestamp);
 
   return (
     <div className={classMessage}>
@@ -20,9 +18,7 @@ export default function Message({
         <div className="message__content">
           <div className="message__name">{name}</div>
           <div className="message__message">{message}</div>
-          <div className="message_time">
-            {time.getHours()}:{time.getMinutes()}
-          </div>
+          <div className="message_time">{getTimeForMessage(timestamp)}</div>
         </div>
       </div>
     </div>

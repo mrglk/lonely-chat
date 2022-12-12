@@ -2,6 +2,7 @@ import "./Chat.scss";
 import Message from "../Message/Message";
 import { useState, useEffect, useCallback } from "react";
 import { Alert, Form, Button } from "react-bootstrap";
+import { generateId } from "../../utils/helpers";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -16,16 +17,16 @@ export default function Chat() {
   useEffect(() => {
     const handleStorageChange = (e) => {
       const { newValue, key } = e;
-  
+
       if (key !== "lastMessage" || !newValue) {
         return;
       }
-  
+
       const newMessage = JSON.parse(newValue);
-  
+
       setMessages((oldMessages) => [newMessage, ...oldMessages]);
-    }
-  
+    };
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
@@ -80,86 +81,76 @@ export default function Chat() {
   return (
     <div className="chat">
       <div className="chat__inner">
-        {isLogged ? (
-          <div className="chat__content">
-            <div className="chat__messages">
-              {messages?.map((item) => (
-                <Message
-                  key={item.id}
-                  name={item.name}
-                  message={item.message}
-                  userId={item.userId}
-                  sessionId={sessionName?.id}
-                  timestamp={item.timestamp}
-                />
-              ))}
+        <div className="chat__chatAndLoginWrapper">
+          {isLogged ? (
+            <div className="chat__content">
+              <div className="chat__messages">
+                {messages?.map((message) => (
+                  <Message
+                    key={message.id}
+                    name={message.name}
+                    message={message.message}
+                    timestamp={message.timestamp}
+                    isOutgoing={message.userId === sessionName?.id}
+                  />
+                ))}
+              </div>
+              <div className="chat__form">
+                <div className="chat__inputWrapper">
+                  <Form.Group className="mb-2">
+                    <Form.Control
+                      name="comment"
+                      value={message}
+                      placeholder="Собщение..."
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleAddMessage()}
+                      className="chat__input"
+                    />
+                  </Form.Group>
+                </div>
+                <div className="chat__buttonWrapper">
+                  <Button
+                    className="chat__button"
+                    variant="primary"
+                    type="submit"
+                    onClick={handleAddMessage}>
+                    Отправить
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="chat__form">
+          ) : (
+            <div className="chat__login">
               <div className="chat__inputWrapper">
                 <Form.Group className="mb-2">
+                  <Form.Label>Введите имя:</Form.Label>
                   <Form.Control
-                    name="comment"
-                    value={message}
-                    placeholder="Собщение..."
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddMessage()}
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="chat__input"
+                    onKeyDown={(e) => e.key === "Enter" && handleSetName()}
                   />
                 </Form.Group>
               </div>
               <div className="chat__buttonWrapper">
                 <Button
-                  className="chat__button"
+                  className="chat__buttonLogin"
                   variant="primary"
-                  type="submit"
-                  onClick={handleAddMessage}>
-                  Отправить
+                  type="button"
+                  onClick={handleSetName}>
+                  Войти
                 </Button>
               </div>
             </div>
-            <div className="chat__error">
-              {error && (
-                <Alert variant="warning">{error}</Alert>
-              )}
-            </div>
+          )}
+          <div className="chat__error">
+            {error && <Alert variant="warning">{error}</Alert>}
           </div>
-        ) : (
-          <div className="chat__login">
-            <div className="chat__inputWrapper">
-              <Form.Group className="mb-2">
-                <Form.Label>Введите имя:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="chat__input"
-                  onKeyDown={(e) => e.key === "Enter" && handleSetName()}
-                />
-              </Form.Group>
-            </div>
-            <div className="chat__buttonWrapper">
-              <Button
-                className="chat__buttonLogin"
-                variant="primary"
-                type="button"
-                onClick={handleSetName}>
-                Войти
-              </Button>
-            </div>
-            <div className="chat__error">
-              {error && (
-                <Alert variant="warning">{error}</Alert>
-              )}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
-}
-
-function generateId() {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
