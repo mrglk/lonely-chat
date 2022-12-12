@@ -1,38 +1,33 @@
 import "./Chat.scss";
 import Message from "../Message/Message";
 import { useState, useEffect, useCallback } from "react";
-import Alert from "react-bootstrap/Alert";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { Alert, Form, Button } from "react-bootstrap";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [isLogged, setIsLogged] = useState(false);
   const [error, setError] = useState("");
-  let sessionName = JSON.parse(sessionStorage.getItem("name"));
+  const sessionName = JSON.parse(sessionStorage.getItem("name"));
 
   const chat = JSON.parse(localStorage.getItem("chat") || "[]");
   const [messages, setMessages] = useState(chat);
 
   useEffect(() => {
-    window.addEventListener("storage", function (e) {
+    const handleStorageChange = (e) => {
       const { newValue, key } = e;
-
+  
       if (key !== "lastMessage" || !newValue) {
         return;
       }
-
+  
       const newMessage = JSON.parse(newValue);
-
-      setMessages((oldMessages) => {
-        if (oldMessages.find(({ id }) => id === newMessage.id)) {
-          return oldMessages;
-        }
-
-        return [newMessage, ...oldMessages];
-      });
-    });
+  
+      setMessages((oldMessages) => [newMessage, ...oldMessages]);
+    }
+  
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   useEffect(() => {
@@ -43,9 +38,9 @@ export default function Chat() {
     sessionName && setIsLogged(true);
   }, [sessionName]);
 
-  const handleName = () => {
+  const handleSetName = () => {
     if (!validation(name)) {
-      setError("Введите хотя бы два символа");
+      setError("Минимум два символа");
       return;
     }
 
@@ -58,7 +53,7 @@ export default function Chat() {
     setError("");
   };
 
-  const handleMessage = useCallback(() => {
+  const handleAddMessage = useCallback(() => {
     if (!validation(message)) {
       setError("Введите хотя бы два символа");
       return;
@@ -107,7 +102,7 @@ export default function Chat() {
                     value={message}
                     placeholder="Собщение..."
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleMessage()}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddMessage()}
                     className="chat__input"
                   />
                 </Form.Group>
@@ -117,14 +112,14 @@ export default function Chat() {
                   className="chat__button"
                   variant="primary"
                   type="submit"
-                  onClick={handleMessage}>
+                  onClick={handleAddMessage}>
                   Отправить
                 </Button>
               </div>
             </div>
             <div className="chat__error">
               {error && (
-                <Alert variant="warning">Введите хотя бы два символа</Alert>
+                <Alert variant="warning">{error}</Alert>
               )}
             </div>
           </div>
@@ -140,7 +135,7 @@ export default function Chat() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="chat__input"
-                  onKeyDown={(e) => e.key === "Enter" && handleName()}
+                  onKeyDown={(e) => e.key === "Enter" && handleSetName()}
                 />
               </Form.Group>
             </div>
@@ -149,13 +144,13 @@ export default function Chat() {
                 className="chat__buttonLogin"
                 variant="primary"
                 type="button"
-                onClick={handleName}>
+                onClick={handleSetName}>
                 Войти
               </Button>
             </div>
             <div className="chat__error">
               {error && (
-                <Alert variant="warning">Введите хотя бы два символа</Alert>
+                <Alert variant="warning">{error}</Alert>
               )}
             </div>
           </div>
