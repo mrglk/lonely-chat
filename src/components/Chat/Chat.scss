@@ -1,51 +1,81 @@
-
 .chat {
   padding: 20px;
   max-width: 1200px;
   width: 100%;
 }
+
 .chat__inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  // height: 100vh;
-  width: 100%;
-  padding-top: 100px;
-  box-sizing: border-box;
 }
 
-// .chat__content {
-//   height: 100vh;
-//   width: 100%;
-//   padding: 100px 0;
-// }
-.chat__header {
-  margin-bottom: 40px;
+.chat__content {
+   width: 60vw;
 }
+
 .chat__messages {
+  position: relative;
   flex: 1 0 auto;
   display: flex;
   flex-direction: column-reverse;
   word-wrap: break-word;
-  height: 600px;
+  height: 60vh;
   padding: 10px 20px;
+  margin-bottom: 10px;
   background-color: rgb(217, 217, 217);
-  border-radius: 20px;
+  box-shadow: 1px 2px 6px 3px rgba(0,0,0,0.07);
+  border-radius: 0.375rem;;
   overflow-y: scroll;
 }
+
 .chat__form {
   flex: 0 0 auto;
   display: flex;
+  width: 100%;
 }
 
 .chat__inputWrapper {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin-right: 5px;
 }
 
-.chat__input {
-  // height: 50px;
-  width: 700px;
-  outline: none;
-  resize: none;
+.chat__input:focus {
+    border-color: #ced4da!important;
+    box-shadow: none !important;
+}
+
+.chat__login {
+ width: 25vw;
+}
+
+.chat__buttonLogin {
+  margin-bottom: 5px;
+}
+
+.chat__error {
+  height: 30px;
+  font-size: 0.8em;
+}
+
+@media screen and (max-width: 959px) {
+  .chat__content {
+     width: 85vw;
+  }
+
+  .chat__login {
+    width: 45vw;
+   }
+}
+
+@media screen and (max-width: 480px) {
+  .chat__content {
+     width: 90vw;
+  }
+
+  .chat__login {
+    width: 70vw;
+   }
 }

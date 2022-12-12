@@ -1,22 +1,7 @@
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-
-body {
-  background-color: rgb(235, 235, 235);
-  box-sizing: border-box;
-  // font-weight: 400;
-}
-
-
 .App {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  // background-color: black;
 }

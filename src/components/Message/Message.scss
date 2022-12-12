@@ -7,9 +7,30 @@
 }
 
 .message__inner {
-    background-color: aliceblue;
-    padding: 15px 39px 15px 20px;
+    background-color: rgb(232, 240, 254);
+    padding: 5px 10px 5px 10px;
     margin-bottom: 10px;
     max-width: 300px;
-    border-radius: 20px;
+    border-radius: 5px;
+}
+
+.message__content {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.message__name {
+    font-weight: 600;
+}
+
+.message__message {
+    font-size: 1em;
+    line-height: 1;
+}
+
+.message_time {
+    align-self: flex-end;
+    font-size: 0.7em;
+    color: rgb(133, 132, 132);
 }
