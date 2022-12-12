@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/lonely-chat/static/css/main.d5dfb26b.css",
+    "main.js": "/lonely-chat/static/js/main.bca5d16a.js",
+    "index.html": "/lonely-chat/index.html",
+    "main.d5dfb26b.css.map": "/lonely-chat/static/css/main.d5dfb26b.css.map",
+    "main.bca5d16a.js.map": "/lonely-chat/static/js/main.bca5d16a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d5dfb26b.css",
+    "static/js/main.bca5d16a.js"
+  ]
+}
